@@ -32,19 +32,19 @@ public class MusicScore {
     }
 
     public String getPlaylistId() {
-        return playlistId;
+        return playListId;
     }
 
     public void setPlaylistId(String playlistId) {
-        this.playlistId = playlistId;
+        this.playListId = playlistId;
     }
 
     public String getPlaylistName() {
-        return playlistName;
+        return playListName;
     }
 
     public void setPlaylistName(String playlistName) {
-        this.playlistName = playlistName;
+        this.playListName = playlistName;
     }
 
     public String getPlayListIcon() {

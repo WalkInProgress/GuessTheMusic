@@ -6,4 +6,7 @@
     <string name="answer_1">Answer 1</string>
     <string name="time_left">Time Left</string>
     <string name="volume_textView">Volume</string>
+    <string name="submit">Submit</string>
+    <string name="send_high_score">Highscore</string>
+    <string name="send_name">Name</string>
 </resources>
