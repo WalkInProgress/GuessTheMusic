@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -14,6 +15,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HighscoreActivity extends AppCompatActivity {
 
@@ -27,11 +31,18 @@ public class HighscoreActivity extends AppCompatActivity {
     private DatabaseReference mHighscoreDatabaseReference;
     private ChildEventListener mChildEventListener;
 
+    // for display all the highscore views
+    private ListView mHighscoreListView;
+    private HighscoreAdapter mHighscoreAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.highscore_layout);
 
+        /* Getting the database and the reference child we want to refer
+         * in this case highscore
+         */
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mHighscoreDatabaseReference = mFirebaseDatabase.getReference().child("highscore");
 
@@ -45,39 +56,29 @@ public class HighscoreActivity extends AppCompatActivity {
         highscoreTextView = findViewById(R.id.highscore_text_view);
         nameTextView = findViewById(R.id.name_text_view);
 
+        // display highscore views
+        mHighscoreListView = findViewById(R.id.highscore_listview);
+        // Initialize message ListView and its adapter
+        List<HighscoreMessage> highscoreMessages = new ArrayList<>();
+        mHighscoreAdapter = new HighscoreAdapter(this, R.layout.highscore_message_layout, highscoreMessages);
+        mHighscoreListView.setAdapter(mHighscoreAdapter);
+
         highScoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // getting userNameEditText & highscoreValueEditText from views
-                String nameString = userNameEditText.getText().toString();
+                String nameString = MainActivity.mUsername;
                 String highscoreString = highscoreValueEditText.getText().toString();
 
                 // create a new HighscoreMessage with those String values
                 HighscoreMessage highscoreMessage = new HighscoreMessage(nameString, highscoreString);
-
+                // push it to the database
                 mHighscoreDatabaseReference.push().setValue(highscoreMessage);
 
                 /**
                  * IMPORTANT NOTE:
-                 * in order to temporary write and read from firebase without the authentication method
-                 * that we will implement later, I needed to modify the rules here:
-                 *https://console.firebase.google.com/u/0/project/guessthemusic-37f20/database/guessthemusic-37f20/rules
-                 *
-                 * from this:
-                 * {
-                 "rules": {
-                 ".read": false,
-                 ".write": false
-                 }
-                 }
-                 * to this:
-                 * {
-                 "rules": {
-                 ".read": true,
-                 ".write": true
-                 }
-                 }
-                 * AS SOON AS WE HAVE an authentication logic, please adjust the values again to FALSE
+                 * right now I changed the database .read and .write rules and you need to be athenticated
+                 * to .read and .write
                  */
 
                 // then, clear all the EditText views
